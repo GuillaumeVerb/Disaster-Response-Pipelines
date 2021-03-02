@@ -1,53 +1,45 @@
-# import packages
 import sys
-import pandas as pd
-import pickle
-import sqlite3
-from sqlalchemy import create_engine
-import re
-
 import nltk
-nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger','stopwords'])
-from nltk.corpus import stopwords
+import warnings
+warnings.filterwarnings('ignore')  # "error", "ignore", "always", "default", "module" or "once"
+
+nltk.download('punkt')
+nltk.download('wordnet')
+
+import pandas as pd
+import numpy as np
+import re
+from sqlalchemy import create_engine
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.multioutput import MultiOutputClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import AdaBoostClassifier
-
 from sklearn.metrics import classification_report
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.model_selection import train_test_split
+from sklearn.multioutput import MultiOutputClassifier
 from sklearn.metrics import confusion_matrix
-from sklearn.metrics import f1_score
-from sklearn.metrics import precision_recall_fscore_support
-from sklearn.metrics import average_precision_score
-from sklearn.metrics import accuracy_score
-from statistics import mean
+from nltk.stem.porter import PorterStemmer
+from sklearn.model_selection import GridSearchCV
+import pickle
 
-from util import Tokenizer, StartingVerbExtractor
+# In[2]:
+def load_data(database_filepath):
 
-def load_data(data_file):
-    
-    """
-    Load SQLite database file to prepare input and labels
-    """
-    
-    # read in file
-    engine = create_engine( 'sqlite:///{}'.format(data_file) )
-    df = pd.read_sql_table('rawdata',con=engine)
+    '''
+    Function to retreive data from sql database (database_filepath) and split the dataframe into X and y variable
+    Input: Databased filepath
+    Output: Returns the Features X & target y along with target columns names catgeory_names
+    '''
+    engine = create_engine('sqlite:///'+ database_filepath)
+    df = pd.read_sql("SELECT * FROM final", engine)
 
-    # define features and label arrays
     X = df['message']
-    Y = df.drop(labels=['id','message','original','genre'], axis=1)
-    Y_col = Y.columns.values
-
-    return X, Y, Y_col
-
+    Y = df.iloc[:,4:]
+    category_names = Y.columns.values
+    
+    return  X, Y, category_names
+# In[3]:
 
 def tokenize(text):
     '''
@@ -78,8 +70,7 @@ def tokenize(text):
     
     
     return clean_tokens
-
-
+# In[4]:
 
 def build_model():
     '''
@@ -87,6 +78,8 @@ def build_model():
     Input: N/A
     Output: Returns the model
     '''
+
+
 
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -103,19 +96,21 @@ def build_model():
 
     return cv
 
+       
 
+    
 
-
+# In[5]:
 def evaluate_model(model, X_test, Y_test, category_names):
 
     '''
     Function to evaluate a model and return the classificatio and accurancy score.
-    Inputs: Model, X_test, y_test, category_names
+    Inputs: Model, X_test, y_test, Catgegory_names
     Outputs: Prints the Classification report & Accuracy Score
     '''
 
-    y_pred = model.predict(X_test)
-    report= classification_report(y_pred,Y_test, target_names=category_names)
+    Y_pred = model.predict(X_test)
+    report= classification_report(Y_pred,Y_test, target_names=category_names)
 
 
     temp=[]
@@ -125,10 +120,12 @@ def evaluate_model(model, X_test, Y_test, category_names):
     report_df=pd.DataFrame(clean_list[1:],columns=['group','precision','recall', 'f1-score','support'])
 
 
-    return report_df
+    return report
+    
 
 
 
+# In[6]:
 
 
 def save_model(model, model_filepath):
@@ -142,22 +139,9 @@ def save_model(model, model_filepath):
     with open(model_filepath, 'wb') as file:
         pickle.dump(model, file)
 
-
+# In[7]:
 
 def main():
-        
-    """
-    Classifier Main function
-    
-    This function implements Machine Learning Pipeline:
-        1) Load data from SQLite db
-        2) Train ML model on training set
-        3) Evaluate model performance on test set
-        4) Save trained model as Pickle
-    
-    """
-
-    
     if len(sys.argv) == 3:
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
@@ -184,7 +168,6 @@ def main():
               'save the model to as the second argument. \n\nExample: python '\
               'train_classifier.py ../data/DisasterResponse.db classifier.pkl')
 
-
-
+# In[8]:
 if __name__ == '__main__':
     main()
