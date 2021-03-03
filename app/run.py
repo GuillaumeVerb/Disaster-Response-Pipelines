@@ -47,6 +47,11 @@ def index():
      
     category_names=df.columns.values[4:]
     category_counts=df[category_names].sum()
+    
+    social = df[df['genre']=='social']
+    categorysocial_names=social.columns.values[4:]
+    categorysocial_counts=social[categorysocial_names].sum()
+    
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
     graphs = [
@@ -69,6 +74,22 @@ def index():
 
             'layout': {
                 'title': 'Distribution of Message Genres',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Genre"
+                }
+            }
+        },
+        
+        {
+            'data': [
+                    Bar(x=categorysocial_counts,y=categorysocial_names, orientation='h')
+            ],
+                
+            'layout':{
+                'title': 'Distribution of Category of Disastor for Genre Social',
                 'yaxis': {
                     'title': "Count"
                 },
