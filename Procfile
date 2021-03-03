@@ -1,1 +1,1 @@
-web gunicorn disaster-response-pipelines:app
+web gunicorn disaster-pipelines:app
