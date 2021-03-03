@@ -1,4 +1,4 @@
-# In[1]:
+from app import app
 import json
 import plotly
 import pandas as pd
