@@ -17,8 +17,8 @@ git clone https://github.com/GuillaumeVerb/Disaster-Response-Pipelines.git
 # Executing Program:
 Run the following commands in the project's root directory to set up your database and model.</br>
 
-To run ETL pipeline that cleans data and stores in database python data/process_data.py data/disaster_messages.csv data/disaster_categories.csv data/DisasterResponse.db</br>
-To run ML pipeline that trains classifier and saves python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl</br>
+To run ETL pipeline that cleans data and stores in database python data/process_data.py data/messages.csv data/categories.csv data/DisasterResponse.db</br>
+To run ML pipeline that trains classifier and saves python models/train_classifer.py data/DisasterResponse.db models/classifier.pkl</br>
 Run the following command in the app's directory to run your web app. python run.py</br>
 
 Go to http://0.0.0.0:3001/
@@ -34,13 +34,13 @@ Go to http://0.0.0.0:3001/
 |- run.py  # Flask file that runs app</br>
 
 - data</br>
-|- disaster_categories.csv  # data to process </br>
-|- disaster_messages.csv  # data to process</br>
+|- categories.csv  # data to process </br>
+|- messages.csv  # data to process</br>
 |- process_data.py</br>
 |- DisasterResponse.db   # database to save clean data to</br>
 
 - models</br>
-|- train_classifier.py</br>
+|- train_classifer.py</br>
 |- classifier.pkl  # saved model </br>
 
 - README.md
