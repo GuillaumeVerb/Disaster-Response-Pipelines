@@ -1,0 +1,5 @@
+averaged_perceptron_tagger
+wordnet
+punkt
+pros_cons
+reuters
