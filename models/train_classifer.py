@@ -23,7 +23,6 @@ from nltk.stem.porter import PorterStemmer
 from sklearn.model_selection import GridSearchCV
 import pickle
 
-# In[2]:
 def load_data(database_filepath):
 
     '''
@@ -39,7 +38,6 @@ def load_data(database_filepath):
     category_names = Y.columns.values
     
     return  X, Y, category_names
-# In[3]:
 
 def tokenize(text):
     '''
@@ -63,14 +61,13 @@ def tokenize(text):
     clean_tokens = []
     for tok in tokens:
         clean_tok = lemmatizer.lemmatize(tok, pos='n').strip()
-        #I passed in the output from the previous noun lemmatization step. This way of chaining procedures is very common.
         clean_tok = lemmatizer.lemmatize(clean_tok, pos='v')
         
         clean_tokens.append(clean_tok)
     
     
     return clean_tokens
-# In[4]:
+
 
 def build_model():
     '''
@@ -78,8 +75,6 @@ def build_model():
     Input: N/A
     Output: Returns the model
     '''
-
-
 
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -97,10 +92,6 @@ def build_model():
     return cv
 
        
-
-    
-
-# In[5]:
 def evaluate_model(model, X_test, Y_test, category_names):
 
     '''
@@ -112,21 +103,14 @@ def evaluate_model(model, X_test, Y_test, category_names):
     Y_pred = model.predict(X_test)
     report= classification_report(Y_pred,Y_test, target_names=category_names)
 
-
     temp=[]
     for item in report.split("\n"):
         temp.append(item.strip().split('     '))
     clean_list=[ele for ele in temp if ele != ['']]
     report_df=pd.DataFrame(clean_list[1:],columns=['group','precision','recall', 'f1-score','support'])
 
-
     return report
     
-
-
-
-# In[6]:
-
 
 def save_model(model, model_filepath):
 
@@ -139,7 +123,6 @@ def save_model(model, model_filepath):
     with open(model_filepath, 'wb') as file:
         pickle.dump(model, file)
 
-# In[7]:
 
 def main():
     if len(sys.argv) == 3:
