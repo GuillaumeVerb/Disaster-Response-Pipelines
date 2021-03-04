@@ -122,7 +122,7 @@ def go():
     return render_template(
         'go.html',
         query=query,
-        classification_result=classification_results
+#        classification_result=classification_results
     )
 
 # In[9]:
