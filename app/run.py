@@ -35,8 +35,8 @@ model = joblib.load("../models/classifier.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
-@app.route('/')
-@app.route('/index')
+@app.run('/')
+@app.run('/index')
 
 def index():
     
@@ -109,7 +109,7 @@ def index():
 
 
 # web page that handles user query and displays model results
-@app.route('/go')
+@app.run('/go')
 def go():
     # save user input in query
     query = request.args.get('query', '') 
