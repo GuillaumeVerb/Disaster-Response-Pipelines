@@ -1,4 +1,4 @@
-from app import run
+from app import app
 import json
 import plotly
 import pandas as pd
@@ -122,7 +122,7 @@ def go():
     return render_template(
         'go.html',
         query=query,
-#        classification_result=classification_results
+        classification_result=classification_results
     )
 
 # In[9]:
